@@ -35,59 +35,60 @@ function onClickHandler(e) {
     fullScreenPreview.src = e.target.dataset.source;
     fullScreenPreview.alt = e.target.alt;
     fullScreenPreview.dataset.index = e.target.dataset.index;
-    };
+    document.addEventListener('keydown', function (e) {
+        switch (e.code) {
+      case "ArrowLeft":
+            onKeyLeft(e);
+          break;
+      case "ArrowRight":
+            onKeyRight(e);
+          break;
+      case "Escape":
+          removeClass(e.code === 'Escape');
+          break;
+      }
+    });
+  };
+};
+
+function onKeyLeft(e) {
+  const index = fullScreenPreview.dataset.index;
+  const prevPicture = document.querySelector(`img[data-index='${index - 1}']`);
+
+    if (e.code !== 'ArrowLeft' || prevPicture === null) {
+        return
+    } 
+      fullScreenPreview.src = prevPicture.dataset.source;
+      fullScreenPreview.dataset.index = prevPicture.dataset.index;
+      fullScreenPreview.alt = prevPicture.alt;
+};
+
+function onKeyRight(e) {
+  const index = fullScreenPreview.dataset.index;
+  const nextPicture = document.querySelector(`img[data-index='${Number(index) + 1}']`);
+
+    if (e.code !== 'ArrowRight' || nextPicture === null) {
+        return
+    }
+      fullScreenPreview.src = nextPicture.dataset.source;
+      fullScreenPreview.dataset.index = nextPicture.dataset.index;
+      fullScreenPreview.alt = nextPicture.alt;
+};
+
+function removeClass(e) {
+  lightbox.classList.remove('is-open');
+    fullScreenPreview.src = '';
+    fullScreenPreview.alt = '';
 };
 
 function onCloseButton(e) {
-  if(e.target.classList.contains('lightbox__button')) {
-    lightbox.classList.remove('is-open');
-    fullScreenPreview.src = '';
-    fullScreenPreview.alt = '';
-    };
+  removeClass(e.target.classList.contains('lightbox__button'));
 };
 
 function onCloseOverlay(e) {
-    if (e.target === e.currentTarget) {
-      lightbox.classList.remove('is-open');
-      fullScreenPreview.src = '';
-      fullScreenPreview.alt = '';
-    };
+    removeClass(e.target === e.currentTarget);
 };
   
 ground.addEventListener('click', onClickHandler);
 overlay.addEventListener('click', onCloseOverlay);
 closeButton.addEventListener('click', onCloseButton);
-
-document.addEventListener('keydown', function(e) {
-  
-  const index = fullScreenPreview.dataset.index;
-  const prevPicture = document.querySelector(`img[data-index='${index - 1}']`);
-  const nextPicture = document.querySelector(`img[data-index='${Number(index) + 1}']`);
-  
-  switch (e.code) {
-    case "ArrowLeft":
-        if (e.code !== 'ArrowLeft' || prevPicture === null) {
-          return
-  }
-        fullScreenPreview.src = prevPicture.dataset.source;
-        fullScreenPreview.dataset.index = prevPicture.dataset.index;
-        fullScreenPreview.alt = prevPicture.alt;
-        break;
-    case "ArrowRight":
-        if (e.code !== 'ArrowRight' || nextPicture === null) {
-          return
-  }
-        fullScreenPreview.src = nextPicture.dataset.source;
-        fullScreenPreview.dataset.index = nextPicture.dataset.index;
-        fullScreenPreview.alt = nextPicture.alt;
-        break;
-    case "Escape":
-        if (e.code === 'Escape') {
-        lightbox.classList.remove('is-open');
-        fullScreenPreview.src = '';
-        fullScreenPreview.alt = '';
-    };
-        break;
-}
-});
-
